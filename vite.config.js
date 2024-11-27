@@ -1,3 +1,5 @@
+import basicSsl from "@vitejs/plugin-basic-ssl";
+
 export default {
   base: "./",
   root: "three-dev",
@@ -5,4 +7,5 @@ export default {
   build: {
     outDir: "../dist",
   },
+  plugins: [basicSsl()],
 };
