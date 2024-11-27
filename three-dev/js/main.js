@@ -28,7 +28,13 @@ let INTERSECTION;
 let teleportgroup = new THREE.Group();
 teleportgroup.name = "Teleport-Group";
 
-//container = document.querySelector(".vr");
+let mouseX = 0;
+let mouseY = 0;
+
+let windowHalfX = window.innerWidth / 2;
+let windowHalfY = window.innerHeight / 2;
+
+document.addEventListener("mousemove", onDocumentMouseMove);
 
 function init() {
   scene = new THREE.Scene();
@@ -48,75 +54,6 @@ function init() {
 
   const axesHelper = new THREE.AxesHelper(5);
   scene.add(axesHelper);
-
-  // custom fog
-  const skyColor = color(0xf0f5f5);
-  const groundColor = color(0xd0dee7);
-
-  const fogNoiseDistance = positionView.z
-    .negate()
-    .smoothstep(0, camera.far - 300);
-
-  const distance = fogNoiseDistance.mul(20).max(4);
-  const alpha = 0.98;
-  const groundFogArea = float(distance)
-    .sub(positionWorld.y)
-    .div(distance)
-    .pow(3)
-    .saturate()
-    .mul(alpha);
-
-  // a alternative way to create a TimerNode
-  const timer = uniform(0).onFrameUpdate((frame) => frame.time);
-
-  const fogNoiseA = triNoise3D(positionWorld.mul(0.005), 0.2, timer);
-  const fogNoiseB = triNoise3D(positionWorld.mul(0.01), 0.2, timer.mul(1.2));
-
-  const fogNoise = fogNoiseA.add(fogNoiseB).mul(groundColor);
-
-  // apply custom fog
-  scene.fogNode = fog(
-    fogNoiseDistance.oneMinus().mix(groundColor, fogNoise),
-    groundFogArea
-  );
-  scene.backgroundNode = normalWorld.y.max(0).mix(groundColor, skyColor);
-
-  /* const headGeometry = new THREE.SphereGeometry(1, 32, 32);
-  const headMaterial = new THREE.MeshStandardMaterial({ color: 0xffe0bd });
-  const head = new THREE.Mesh(headGeometry, headMaterial);
-  head.position.set(0, 1, 0);
-  scene.add(head);
-
-  const earGeometry = new THREE.ConeGeometry(0.3, 0.7, 3);
-  const earMaterial = new THREE.MeshStandardMaterial({ color: 0xffe0bd });
-  const leftEar = new THREE.Mesh(earGeometry, earMaterial);
-  leftEar.position.set(-0.6, 2, 0);
-  leftEar.rotation.set(0, 0, -Math.PI / -6);
-  scene.add(leftEar);
-
-  const rightEar = new THREE.Mesh(earGeometry, earMaterial);
-  rightEar.position.set(0.6, 2, 0);
-  rightEar.rotation.set(0, 0, Math.PI / -6);
-  scene.add(rightEar);
-
-  const wireframeMaterial = new THREE.MeshBasicMaterial({
-    wireframe: true,
-    color: 0x000000,
-  });
-
-  const headWireframe = new THREE.Mesh(headGeometry, wireframeMaterial);
-  headWireframe.position.set(0, 1, 0);
-  scene.add(headWireframe);
-
-  const leftEarWireframe = new THREE.Mesh(earGeometry, wireframeMaterial);
-  leftEarWireframe.position.set(-0.6, 1.8, 0);
-  leftEarWireframe.rotation.set(0, 0, -Math.PI / 6);
-  scene.add(leftEarWireframe);
-
-  const rightEarWireframe = new THREE.Mesh(earGeometry, wireframeMaterial);
-  rightEarWireframe.position.set(0.6, 1.8, 0);
-  rightEarWireframe.rotation.set(0, 0, Math.PI / 6);
-  scene.add(rightEarWireframe); */
 
   const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
   directionalLight.position.set(5, 5, 5);
@@ -143,6 +80,11 @@ function init() {
   initVR();
 
   console.log(scene);
+}
+
+function onDocumentMouseMove(event) {
+  mouseX = (event.clientX - windowHalfX) / 100;
+  mouseY = (event.clientY - windowHalfY) / 100;
 }
 
 function initVR() {
@@ -423,6 +365,9 @@ function resize() {
 }
 
 renderer.setAnimationLoop(function () {
+  camera.position.x += (mouseX - camera.position.x) * 0.05;
+  camera.position.y += (-mouseY - camera.position.y) * 0.05;
+
   cleanIntersected();
   intersectObjects(controller1);
   intersectObjects(controller2);
