@@ -5,9 +5,47 @@
 		<title>My first three.js app</title>
 		<style>
 			body { margin: 0; }
-		</style>
-		<script type="module" crossorigin src="./assets/index-Cp48NetN.js"></script>
-	</head>
-	<body>
-	</body>
+		</style>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="./assets/index-DyGIBirN.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-C9VNm7aL.css">
+</head>
+<body>
+	<div class="header">
+		<p class="text_1">My 3D portfolio</p>
+	</div>
+	<div class="header_2">
+		<p class="text_2">Barrel made with Blender using modelviewer.dev for displaying. Variants made using Gimp.</p>
+	</div>
+	<div class="model">
+	<model-viewer src="./ar/kbarrel.gltf" ar ar-modes="webxr scene-viewer quick-look" camera-controls tone-mapping="neutral" poster="./ar/poster.webp" shadow-intensity="1" camera-orbit="183.9deg 59.98deg 3.187m" field-of-view="30deg">
+		<button class="Hotspot" slot="hotspot-1" data-position="-0.03599022994766832m 1.1867029666900635m -0.03260589334254571m" data-normal="0m 1m 0m" data-visibility-attribute="visible">
+			<div class="HotspotAnnotation">Grass</div>
+		</button>
+		<div class="progress-bar hide" slot="progress-bar">
+			<div class="update-bar"></div>
+		</div>
+		<button slot="ar-button" id="ar-button">
+			View in your space
+		</button>
+		<div class="controls">
+			<div>Variant: <select id="variant"></select></div>
+		</div>
+		<div id="ar-prompt">
+			<img src="./assets/ar_hand_prompt-aecaS-bU.png">
+		</div>
+	</model-viewer>
+	</div>
+	<div class="header_2">
+		<p class="text_3">Three.js scene with implemented VR controls. 
+			Contains barrel, seagull and beachy wolrd made with Blender and a photogrammetry model of a shoe.</p>
+	</div>
+	<div class="display">
+		<div class="vr"></div>
+	</div>
+	<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+	<script src="./js/script.js"></script>
+</body>
 </html>

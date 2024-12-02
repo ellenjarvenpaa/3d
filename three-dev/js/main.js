@@ -4,16 +4,6 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { RGBELoader } from "three/addons/loaders/RGBELoader.js";
 import { VRButton } from "three/addons/webxr/VRButton.js";
 import { XRControllerModelFactory } from "three/addons/webxr/XRControllerModelFactory.js";
-import {
-  color,
-  fog,
-  float,
-  positionWorld,
-  triNoise3D,
-  positionView,
-  normalWorld,
-  uniform,
-} from "three/tsl";
 
 let camera, scene, renderer, controls;
 let controller1, controller2;
@@ -28,13 +18,7 @@ let INTERSECTION;
 let teleportgroup = new THREE.Group();
 teleportgroup.name = "Teleport-Group";
 
-let mouseX = 0;
-let mouseY = 0;
-
-let windowHalfX = window.innerWidth / 2;
-let windowHalfY = window.innerHeight / 2;
-
-document.addEventListener("mousemove", onDocumentMouseMove);
+let container = document.querySelector(".vr");
 
 function init() {
   scene = new THREE.Scene();
@@ -42,15 +26,15 @@ function init() {
   scene.add(teleportgroup);
   camera = new THREE.PerspectiveCamera(
     75,
-    window.innerWidth / window.innerHeight,
+    container.offsetWidth / container.offsetHeight,
     0.1,
     1000
   );
   camera.position.set(5, 5, 5);
 
   renderer = new THREE.WebGLRenderer();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
+  renderer.setSize(container.offsetWidth, container.offsetHeight);
+  container.appendChild(renderer.domElement);
 
   const axesHelper = new THREE.AxesHelper(5);
   scene.add(axesHelper);
@@ -82,14 +66,9 @@ function init() {
   console.log(scene);
 }
 
-function onDocumentMouseMove(event) {
-  mouseX = (event.clientX - windowHalfX) / 100;
-  mouseY = (event.clientY - windowHalfY) / 100;
-}
-
 function initVR() {
   renderer.xr.enabled = true;
-  document.body.appendChild(VRButton.createButton(renderer));
+  container.appendChild(VRButton.createButton(renderer));
   renderer.xr.addEventListener(
     "sessionstart",
     () => (baseReferenceSpace = renderer.xr.getReferenceSpace())
@@ -120,9 +99,6 @@ function initVR() {
   scene.add(controllerGrip1);
 
   controllerGrip2 = renderer.xr.getControllerGrip(1);
-  /*controllerGrip2.add(
-    controllerModelFactory.createControllerModel(controllerGrip2)
-  );*/
   const loader = new GLTFLoader().setPath("");
 
   loader.load("pyssy/scene.gltf", async function (gltf) {
@@ -359,15 +335,12 @@ function moveMarker() {
 }
 
 function resize() {
-  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.aspect = container.offsetWidth / container.offsetHeight;
   camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(container.innerWidth, container.innerHeight);
 }
 
 renderer.setAnimationLoop(function () {
-  camera.position.x += (mouseX - camera.position.x) * 0.05;
-  camera.position.y += (-mouseY - camera.position.y) * 0.05;
-
   cleanIntersected();
   intersectObjects(controller1);
   intersectObjects(controller2);
